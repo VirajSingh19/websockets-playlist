@@ -4,7 +4,8 @@
   "description": "A chat app using WebSockets",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -18,9 +19,10 @@
   "homepage": "https://github.com/iamshaunjp/websockets-playlist#readme",
   "dependencies": {
     "express": "^4.15.2",
+    "knex": "^0.16.3",
     "socket.io": "^1.7.3"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.18.9"
   }
 }

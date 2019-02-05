@@ -19,7 +19,9 @@ io.on('connection', (socket) => {
     // Handle chat event
     socket.on('chat', function(data){
         // console.log(data);
-        io.sockets.emit('chat', data);
+        // io.sockets.emit('chat', data);
+        socket.broadcast.emit('chat', data);
+
     });
 
     // Handle typing event
