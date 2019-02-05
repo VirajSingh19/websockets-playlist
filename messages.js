@@ -1,4 +1,6 @@
 const express = require('express');
+const sqlite3 = require('sqlite3');
+
 // const socket = require('socket.io');
 const r  = express.Router();
 const db = require('knex')({
@@ -9,73 +11,53 @@ const db = require('knex')({
   });
 
   r.post('/',(req,res)=>{
-    let response = {name:'',credentials:'wrong'};
-    db.select().from('Users').then( data=>{
-      let u = req.body.name;
-      let p = req.body.password;
 
-      for(let i=0;i<data.length;i++)
-      {
-        if(u===data[i].name && p===data[i].password)
-        {
-          response.name = u;
-          response.credentials='correct';
-          console.log('matched');
-          break;
-        }
-      }
-      // console.log('name is',u,'password is',p);
-      // console.log('db is ',data[0]);
+    let respose = 'message unsent';
+
+    db.insert(req.body).into('message')
+    .then(data=>{
+        respose = 'sent';
+        res.json(respose);
+    })
+    .catch(err=>{
+      response='error';
       res.json(response);
     })
-  });
+ });
 
  
+
+
+ r.post('/getmessage',(req,res)=>{
+
+    let s = req.body.sender;
+    let r = req.body.receiver;
+
+    let response={status:'',result:''};
+ 
+    const db = new sqlite3.Database('./db.sqlite', (err) => {
+        if (err) {
+            response.result=  err;
+            res.json(response);
+        }else {
+            console.log('connected to databse');
+        } 
+    })
   
+     
+  
+      db.all(`select * from message where sender = ? and receiver = ? or sender = ? and receiver = ? order by mid asc`,[s,r,r,s] ,(err, result) => {  
+          if (err) {
 
+            response.result=err;
+            res.json(response);
+          } else {
+            response.result=result;
+            res.json(response);
+          }
+        });
 
-  r.post('/signup',(req,res)=>{
-    let signup_response = {name:'',status:'unregistered'};
-    let u =req.body.name;
-    let p = req.body.password;
-    let flag = false;
-    console.log('body is ',req.body);
-    db.select().from('Users').then( data=>{
-      let u2 = req.body.name;
-      let p2 = req.body.password;
-      console.log('data is',data);
-      for(let i=0;i<data.length;i++)
-      {
-        if(u2===data[i].name)
-        {
-          signup_response.status='already';
-          console.log('matched');
-        }
-      }
-      if(signup_response.status==='unregistered'){
-        console.log('unregistered');
-
-
-        db.insert(req.body).into('users')
-        .then(data=>{
-          console.log('registered ',data);
-          signup_response.status='successfuly registered';
-          res.json(signup_response);
-        })
-        .catch(err=>{
-          signup_response.status='error';
-          res.json(signup_response);
-        })
-      
-      
-      }
-     else {
-        console.log('already regitered');
-        res.json(signup_response);
-      }
-    });
-   });
-
+ });
 
 
   module.exports = r;
