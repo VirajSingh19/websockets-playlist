@@ -18,6 +18,7 @@ app.use('/message',message);
 
 
 
+
 // Socket setup & pass server
 const io = socket(server);
 io.on('connection', (socket) => {
@@ -26,10 +27,9 @@ io.on('connection', (socket) => {
 
     // Handle chat event
     socket.on('chat', function(data){
-        // console.log(data);
-        // io.sockets.emit('chat', data);
-        socket.broadcast.emit('chat', data);
-
+         console.log(data);
+        io.sockets.emit('chat', data);
+        // socket.broadcast.emit('chat', data);
     });
 
     // Handle typing event

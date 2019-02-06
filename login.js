@@ -1,6 +1,9 @@
 const express = require('express');
-// const socket = require('socket.io');
 const r  = express.Router();
+
+
+
+
 const db = require('knex')({
     client: 'sqlite3',
     connection: {
@@ -14,19 +17,32 @@ const db = require('knex')({
       let u = req.body.name;
       let p = req.body.password;
 
-      for(let i=0;i<data.length;i++)
-      {
-        if(u===data[i].name && p===data[i].password)
-        {
-          response.name = u;
+      db('users').where({
+        name:u,
+        password:p
+      }).then( data=>{
+        console.log('length is',data.length);
+           
+        if(data.length!==0){
           response.credentials='correct';
+          response.name = u;
           console.log('matched');
-          break;
+          res.json(response);
         }
-      }
+        else{ 
+          res.json(response);
+        }
+  
+      }).catch( err => {
+        console.log(err);
+        response.credentials=err;
+        res.json(response);
+      });
+
+      
       // console.log('name is',u,'password is',p);
       // console.log('db is ',data[0]);
-      res.json(response);
+     
     })
   });
 
@@ -60,6 +76,7 @@ const db = require('knex')({
         .then(data=>{
           console.log('registered ',data);
           signup_response.status='successfuly registered';
+
           res.json(signup_response);
         })
         .catch(err=>{
@@ -67,15 +84,13 @@ const db = require('knex')({
           res.json(signup_response);
         })
       
-      
-      }
+      } 
      else {
-        console.log('already regitered');
+        console.log('already registered');
         res.json(signup_response);
       }
     });
    });
-
 
 
   module.exports = r;
