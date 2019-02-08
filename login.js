@@ -13,7 +13,6 @@ const db = require('knex')({
 
   r.post('/',(req,res)=>{
     let response = {name:'',credentials:'wrong'};
-    db.select().from('Users').then( data=>{
       let u = req.body.name;
       let p = req.body.password;
 
@@ -43,9 +42,7 @@ const db = require('knex')({
       // console.log('name is',u,'password is',p);
       // console.log('db is ',data[0]);
      
-    })
-  });
-
+    });
  
   
 

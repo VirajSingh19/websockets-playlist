@@ -32,15 +32,15 @@ const db = require('knex')({
 
     let s = req.body.sender;
     let r = req.body.receiver;
-
+    // console.log(`sender is ${s} and receiver is ${r}`);
     let response={status:'',result:''};
  
     const db = new sqlite3.Database('./db.sqlite', (err) => {
-        if (err) {
+        if(err) {
             response.result=  err;
             res.json(response);
         }else {
-            console.log('connected to databse');
+            // console.log('connected to databse');
         } 
     })
   
@@ -48,7 +48,6 @@ const db = require('knex')({
   
       db.all(`select * from message where sender = ? and receiver = ? or sender = ? and receiver = ? order by mid asc`,[s,r,r,s] ,(err, result) => {  
           if (err) {
-
             response.result=err;
             res.json(response);
           } else {
@@ -58,6 +57,9 @@ const db = require('knex')({
         });
 
  });
+
+
+
 
 
   module.exports = r;
